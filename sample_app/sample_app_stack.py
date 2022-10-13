@@ -1,26 +1,21 @@
+from aws_cdk import Duration, Stack
+from aws_cdk import aws_iam as iam
+from aws_cdk import aws_sns as sns
+from aws_cdk import aws_sns_subscriptions as subs
+from aws_cdk import aws_sqs as sqs
 from constructs import Construct
-from aws_cdk import (
-    Duration,
-    Stack,
-    aws_iam as iam,
-    aws_sqs as sqs,
-    aws_sns as sns,
-    aws_sns_subscriptions as subs,
-)
 
 
 class SampleAppStack(Stack):
-
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
         queue = sqs.Queue(
-            self, "SampleAppQueue",
+            self,
+            "SampleAppQueue",
             visibility_timeout=Duration.seconds(300),
         )
 
-        topic = sns.Topic(
-            self, "SampleAppTopic"
-        )
+        topic = sns.Topic(self, "SampleAppTopic")
 
         topic.add_subscription(subs.SqsSubscription(queue))

@@ -1,5 +1,6 @@
 import aws_cdk as core
 import aws_cdk.assertions as assertions
+
 from sample_app.sample_app_stack import SampleAppStack
 
 
@@ -8,9 +9,7 @@ def test_sqs_queue_created():
     stack = SampleAppStack(app, "sample-app")
     template = assertions.Template.from_stack(stack)
 
-    template.has_resource_properties("AWS::SQS::Queue", {
-        "VisibilityTimeout": 300
-    })
+    template.has_resource_properties("AWS::SQS::Queue", {"VisibilityTimeout": 300})
 
 
 def test_sns_topic_created():
