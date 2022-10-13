@@ -1,4 +1,4 @@
-.PHONY: up-container build-container run-container rm-container
+.PHONY: up-container build-container run-container rm-container black isort test
 
 up-container: build-container run-container
 
@@ -19,3 +19,14 @@ rm-container:
 				docker rm \
 				-f \
 				mlops-cdk-sample
+
+format: black isort
+
+black:
+				poetry run black .
+
+isort:
+				poetry run isort .
+
+test:
+				poetry run pytest
