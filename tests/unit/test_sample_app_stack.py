@@ -1,7 +1,7 @@
 import aws_cdk as core
 import aws_cdk.assertions as assertions
 
-from sample_app.sample_app_stack import SampleAppStack
+from mlops_cdk_sample.sample_app_stack import SampleAppStack
 
 
 def test_sqs_queue_created():
