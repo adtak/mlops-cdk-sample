@@ -10,6 +10,7 @@ packages = [{include = "mlops_cdk_sample"}]
 python = "^3.10"
 aws-cdk-lib = "2.45.0"
 constructs = "^10.0.0"
+sagemaker = "^2.112.2"
 
 
 [tool.poetry.group.dev.dependencies]
