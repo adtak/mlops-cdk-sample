@@ -32,3 +32,9 @@ isort:
 
 test:
 				poetry run pytest
+
+deploy:
+				poetry run cdk deploy
+
+destroy:
+				poetry run cdk destroy
