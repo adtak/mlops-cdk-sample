@@ -2,9 +2,9 @@
 
 import aws_cdk as cdk
 
-from mlops_cdk_sample.sample_app_stack import SampleAppStack
+from mlops_cdk_sample.sm_processing import SageMakerProcessingStack
 
 app = cdk.App()
-SampleAppStack(app, "sample-app")
+SageMakerProcessingStack(app, "sample")
 
 app.synth()
