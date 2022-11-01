@@ -1,4 +1,4 @@
 FROM python:3.10.7-buster
 
-WORKDIR /usr/src
+WORKDIR /opt/ml/processing/
 COPY preprocess.py .
