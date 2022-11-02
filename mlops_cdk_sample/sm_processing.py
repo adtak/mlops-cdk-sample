@@ -82,18 +82,13 @@ def get_role_statemachine(scope):
         "SampleStateMachineRole",
         assumed_by=iam.ServicePrincipal("states.ap-northeast-1.amazonaws.com"),
         inline_policies={
-            "SageMakerProcessingJobPolicy": iam.PolicyDocument(
+            "CreateSageMakerProcessingJobPolicy": iam.PolicyDocument(
                 statements=[
                     iam.PolicyStatement(
-                        actions=["sagemaker:CreateProcessingJob"],
+                        actions=["sagemaker:CreateProcessingJob", "iam:PassRole"],
                         effect=iam.Effect.ALLOW,
                         resources=["*"],
                     ),
-                    iam.PolicyStatement(
-                        actions=["iam:PassRole"],
-                        effect=iam.Effect.ALLOW,
-                        resources=["*"],
-                    )
                 ]
             )
         },
@@ -105,4 +100,15 @@ def get_role_sagemaker(scope):
         scope,
         "SampleSageMakerRole",
         assumed_by=iam.ServicePrincipal("sagemaker.amazonaws.com"),
+        inline_policies={
+            "SageMakerProcessingPolicy": iam.PolicyDocument(
+                statements=[
+                    iam.PolicyStatement(
+                        actions=["s3:ListBucket", "ecr:GetAuthorizationToken"],
+                        effect=iam.Effect.ALLOW,
+                        resources=["*"],
+                    ),
+                ]
+            )
+        },
     )
