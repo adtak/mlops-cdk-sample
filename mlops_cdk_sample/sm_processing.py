@@ -55,5 +55,8 @@ class SampleSageMakerProcessingStack(Stack):
         success_step = sfn.Succeed(self, id="Succeded")
         definition = preprocess_step.next(success_step)
         sfn.StateMachine(
-            self, "StateMachine", definition=definition, timeout=Duration.minutes(5)
+            self,
+            "SampleStateMachine",
+            definition=definition,
+            timeout=Duration.minutes(5),
         )
