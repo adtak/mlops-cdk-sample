@@ -153,3 +153,4 @@ venv.bak/
 cdk.out/
 
 .vscode
+.DS_store
