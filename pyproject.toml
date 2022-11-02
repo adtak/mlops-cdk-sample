@@ -13,6 +13,7 @@ constructs = "^10.0.0"
 sagemaker = "^2.112.2"
 boto3 = "^1.24.90"
 cdk-ecr-deployment = "^2.5.6"
+python-dotenv = "^0.21.0"
 
 
 [tool.poetry.group.dev.dependencies]
