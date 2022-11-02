@@ -6,13 +6,18 @@ from constructs import Construct
 
 
 class SampleSageMakerProcessingStack(Stack):
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
+    def __init__(
+        self, scope: Construct, construct_id: str, preprocess_params, **kwargs
+    ) -> None:
         super().__init__(scope, construct_id, **kwargs)
         preprocess_step = sfn.CustomState(
             self,
             "SamplePreProcessingTask",
             state_json=_create_processing_job_state(
-                kwargs["image_uri"], kwargs["input_s3_uri"], kwargs["output_s3_uri"]
+                preprocess_params["image_uri"],
+                preprocess_params["input_s3_uri"],
+                preprocess_params["output_s3_uri"],
+                ""
             ),
         )
         success_step = sfn.Succeed(self, id="Succeded")
