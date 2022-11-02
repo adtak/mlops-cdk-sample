@@ -5,11 +5,15 @@ from aws_cdk import Stack
 from constructs import Construct
 
 
-class S3Stack(Stack):
+class SampleS3Stack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
-        s3.Bucket(self, "SampleInputBucket", **_create_bucket_params())
-        s3.Bucket(self, "SampleOutputBucket", **_create_bucket_params())
+        self.input_bucket = s3.Bucket(
+            self, "SampleInputBucket", **_create_bucket_params()
+        )
+        self.output_bucket = s3.Bucket(
+            self, "SampleOutputBucket", **_create_bucket_params()
+        )
 
 
 def _create_bucket_params() -> Dict[str, Any]:

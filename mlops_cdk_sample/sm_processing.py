@@ -7,8 +7,8 @@ class SampleSageMakerProcessingStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
         image_uri = ""
-        input_s3_uri = ""
-        output_s3_uri = ""
+        input_s3_uri = kwargs["input_s3_uri"]
+        output_s3_uri = kwargs["output_s3_uri"]
         role_arn = ""
         state_json = {
             "Type": "Task",
