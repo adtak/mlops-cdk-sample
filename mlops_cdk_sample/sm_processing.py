@@ -17,7 +17,7 @@ class SampleSageMakerProcessingStack(Stack):
                 preprocess_params["image_uri"],
                 preprocess_params["input_s3_uri"],
                 preprocess_params["output_s3_uri"],
-                ""
+                "",
             ),
         )
         success_step = sfn.Succeed(self, id="Succeded")
