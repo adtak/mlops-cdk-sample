@@ -101,6 +101,20 @@ attrs = ">=20"
 exceptiongroup = {version = "*", markers = "python_version <= \"3.10\""}
 
 [[package]]
+name = "cdk-ecr-deployment"
+version = "2.5.6"
+description = "CDK construct to deploy docker image to Amazon ECR"
+category = "main"
+optional = false
+python-versions = "~=3.7"
+
+[package.dependencies]
+aws-cdk-lib = ">=2.0.0,<3.0.0"
+constructs = ">=10.0.5,<11.0.0"
+jsii = ">=1.52.1,<2.0.0"
+publication = ">=0.0.3"
+
+[[package]]
 name = "click"
 version = "8.1.3"
 description = "Composable command line interface toolkit"
@@ -635,7 +649,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "833414ee81312536ea08d06b518a3e95152536884df3670c263809ce45fc63bd"
+content-hash = "80423e7470b6f157705070844a75a78bddd4832213a25a1de762631f0365b771"
 
 [metadata.files]
 atomicwrites = [
@@ -683,6 +697,10 @@ botocore = [
 cattrs = [
     {file = "cattrs-22.1.0-py3-none-any.whl", hash = "sha256:d55c477b4672f93606e992049f15d526dc7867e6c756cd6256d4af92e2b1e364"},
     {file = "cattrs-22.1.0.tar.gz", hash = "sha256:94b67b64cf92c994f8784c40c082177dc916e0489a73a9a36b24eb18a9db40c6"},
+]
+cdk-ecr-deployment = [
+    {file = "cdk-ecr-deployment-2.5.6.tar.gz", hash = "sha256:06957b670feef2d697dfcd8d00abf5fccf56aafb65f1f8992ecbc7d77e7076be"},
+    {file = "cdk_ecr_deployment-2.5.6-py3-none-any.whl", hash = "sha256:2c4d2a17d7c20e53ef685fbbf52a417615cad48dad08e0048dc531ee0138bf29"},
 ]
 click = [
     {file = "click-8.1.3-py3-none-any.whl", hash = "sha256:bb4d8133cb15a609f44e8213d9b391b0809795062913b383c62be0ee95b1db48"},

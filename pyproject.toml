@@ -12,6 +12,7 @@ aws-cdk-lib = "2.45.0"
 constructs = "^10.0.0"
 sagemaker = "^2.112.2"
 boto3 = "^1.24.90"
+cdk-ecr-deployment = "^2.5.6"
 
 
 [tool.poetry.group.dev.dependencies]
