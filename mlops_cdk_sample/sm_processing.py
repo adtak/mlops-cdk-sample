@@ -1,6 +1,6 @@
-import os
 from typing import Any, Dict
 
+import aws_cdk.aws_iam as iam
 import aws_cdk.aws_stepfunctions as sfn
 from aws_cdk import Duration, Stack
 from constructs import Construct
@@ -18,16 +18,17 @@ class SampleSageMakerProcessingStack(Stack):
                 preprocess_params["image_uri"],
                 preprocess_params["input_s3_uri"],
                 preprocess_params["output_s3_uri"],
-                os.environ["SM_PROCESSING_ROLE_ARN"],
+                get_role_sagemaker(self).role_arn,
             ),
         )
-        success_step = sfn.Succeed(self, id="Succeded")
+        success_step = sfn.Succeed(self, "Succeded")
         definition = preprocess_step.next(success_step)
         sfn.StateMachine(
             self,
             "SampleStateMachine",
             definition=definition,
             timeout=Duration.minutes(5),
+            role=get_role_statemachine(self),
         )
 
 
@@ -73,3 +74,35 @@ def _create_processing_job_state(
             "RoleArn": role_arn,
         },
     }
+
+
+def get_role_statemachine(scope):
+    return iam.Role(
+        scope,
+        "SampleStateMachineRole",
+        assumed_by=iam.ServicePrincipal("states.ap-northeast-1.amazonaws.com"),
+        inline_policies={
+            "SageMakerProcessingJobPolicy": iam.PolicyDocument(
+                statements=[
+                    iam.PolicyStatement(
+                        actions=["sagemaker:CreateProcessingJob"],
+                        effect=iam.Effect.ALLOW,
+                        resources=["*"],
+                    ),
+                    iam.PolicyStatement(
+                        actions=["iam:PassRole"],
+                        effect=iam.Effect.ALLOW,
+                        resources=["*"],
+                    )
+                ]
+            )
+        },
+    )
+
+
+def get_role_sagemaker(scope):
+    return iam.Role(
+        scope,
+        "SampleSageMakerRole",
+        assumed_by=iam.ServicePrincipal("sagemaker.amazonaws.com"),
+    )
