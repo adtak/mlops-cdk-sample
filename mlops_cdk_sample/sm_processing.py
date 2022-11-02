@@ -1,3 +1,4 @@
+import os
 from typing import Any, Dict
 
 import aws_cdk.aws_stepfunctions as sfn
@@ -17,7 +18,7 @@ class SampleSageMakerProcessingStack(Stack):
                 preprocess_params["image_uri"],
                 preprocess_params["input_s3_uri"],
                 preprocess_params["output_s3_uri"],
-                "",
+                os.environ["SM_PROCESSING_ROLE_ARN"],
             ),
         )
         success_step = sfn.Succeed(self, id="Succeded")
@@ -37,7 +38,7 @@ def _create_processing_job_state(
         "Type": "Task",
         "Resource": "arn:aws:states:::aws-sdk:sagemaker:createProcessingJob",
         "Parameters": {
-            "AppSpecification": {"ImageUri.$": image_uri},
+            "AppSpecification": {"ImageUri": image_uri},
             "ProcessingJobName": "SamplePreProcessingJob",
             "ProcessingResources": {
                 "ClusterConfig": {
@@ -69,6 +70,6 @@ def _create_processing_job_state(
                     }
                 ],
             },
-            "RoleArn.$": role_arn,
+            "RoleArn": role_arn,
         },
     }
