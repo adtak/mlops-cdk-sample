@@ -52,7 +52,8 @@ def _create_processing_job_state(
                 {
                     "InputName": "SamplePreProcessingJobInput",
                     "S3Input": {
-                        "LocalPath": "/opt/ml/processing/scripts",
+                        "LocalPath": "/opt/ml/processing/input",
+                        "S3CompressionType": "None",
                         "S3DataType": "S3Prefix",
                         "S3InputMode": "File",
                         "S3Uri": input_s3_uri,
@@ -64,7 +65,7 @@ def _create_processing_job_state(
                     {
                         "OutputName": "SamplePreProcessingJobOutput",
                         "S3Output": {
-                            "LocalPath": "/opt/ml/processing/scripts/output",
+                            "LocalPath": "/opt/ml/processing/output",
                             "S3UploadMode": "EndOfJob",
                             "S3Uri": output_s3_uri,
                         },
@@ -107,6 +108,7 @@ def get_role_sagemaker(scope):
                         actions=[
                             "s3:ListBucket",
                             "s3:GetObject",
+                            "s3:PutObject",
                             "ecr:*",
                         ],
                         effect=iam.Effect.ALLOW,
