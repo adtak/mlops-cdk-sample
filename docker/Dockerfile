@@ -1,4 +1,5 @@
-FROM python:3.10.7-buster
+FROM python:3.10.7-slim-buster
 
-WORKDIR /opt/ml/processing/scripts
-COPY preprocess.py .
+COPY preprocess.py /opt
+
+ENTRYPOINT [ "python3", "/opt/preprocess.py" ]
