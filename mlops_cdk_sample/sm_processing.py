@@ -97,6 +97,7 @@ def get_role_statemachine(scope):
 
 
 def get_role_sagemaker(scope):
+    # https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html#sagemaker-roles-createprocessingjob-perms
     return iam.Role(
         scope,
         "SampleSageMakerRole",
@@ -106,10 +107,18 @@ def get_role_sagemaker(scope):
                 statements=[
                     iam.PolicyStatement(
                         actions=[
-                            "s3:ListBucket",
+                            "cloudwatch:PutMetricData",
+                            "logs:CreateLogStream",
+                            "logs:PutLogEvents",
+                            "logs:CreateLogGroup",
+                            "logs:DescribeLogStreams",
                             "s3:GetObject",
                             "s3:PutObject",
-                            "ecr:*",
+                            "s3:ListBucket",
+                            "ecr:GetAuthorizationToken",
+                            "ecr:BatchCheckLayerAvailability",
+                            "ecr:GetDownloadUrlForLayer",
+                            "ecr:BatchGetImage",
                         ],
                         effect=iam.Effect.ALLOW,
                         resources=["*"],
