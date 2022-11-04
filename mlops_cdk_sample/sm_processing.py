@@ -40,7 +40,7 @@ def _create_processing_job_state(
         "Resource": "arn:aws:states:::aws-sdk:sagemaker:createProcessingJob",
         "Parameters": {
             "AppSpecification": {"ImageUri": image_uri},
-            "ProcessingJobName": "SamplePreProcessingJob",
+            "ProcessingJobName.$": "States.Format('SamplePreProcessingJob-{}', $$.Execution.Name)",  # noqa: E501
             "ProcessingResources": {
                 "ClusterConfig": {
                     "InstanceCount": 1,
