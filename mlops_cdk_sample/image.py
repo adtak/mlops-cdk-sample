@@ -15,6 +15,7 @@ class SamplePreprocessingImage(Stack):
             directory="./docker/",
             file="Dockerfile",
             build_args={"tag": "latest"},
+            platform=ecr_assets.Platform.LINUX_AMD64
         )
         ecrdeploy.ECRDeployment(
             self,
