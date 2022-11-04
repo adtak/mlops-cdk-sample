@@ -106,8 +106,8 @@ def get_role_sagemaker(scope):
                     iam.PolicyStatement(
                         actions=[
                             "s3:ListBucket",
-                            "ecr:GetAuthorizationToken",
-                            "ecr:BatchGetImage",
+                            "s3:GetObject",
+                            "ecr:*",
                         ],
                         effect=iam.Effect.ALLOW,
                         resources=["*"],
