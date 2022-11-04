@@ -1,6 +1,4 @@
 import csv
-import os
-import pathlib
 
 
 def main():
@@ -9,9 +7,7 @@ def main():
         reader = csv.reader(f)
         input = [i for i in reader]
     print(f"Input: {input}")
-    output_dir = pathlib.Path("/opt/ml/processing/output/")
-    os.makedirs(output_dir, exist_ok=True)
-    with open(output_dir / "output.csv", "w") as f:
+    with open("/opt/ml/processing/output/output.csv", "w") as f:
         writer = csv.writer(f)
         writer.writerows(input)
     print("Finish processing.")
