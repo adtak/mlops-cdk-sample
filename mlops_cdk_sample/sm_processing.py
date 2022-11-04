@@ -104,7 +104,11 @@ def get_role_sagemaker(scope):
             "SageMakerProcessingPolicy": iam.PolicyDocument(
                 statements=[
                     iam.PolicyStatement(
-                        actions=["s3:ListBucket", "ecr:GetAuthorizationToken"],
+                        actions=[
+                            "s3:ListBucket",
+                            "ecr:GetAuthorizationToken",
+                            "ecr:BatchGetImage",
+                        ],
                         effect=iam.Effect.ALLOW,
                         resources=["*"],
                     ),
