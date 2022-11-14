@@ -1,4 +1,4 @@
-.PHONY: up-container build-container run-container rm-container black isort test
+.PHONY: up-container build-container run-container rm-container format black isort test deploy destroy
 
 up-container: build-container run-container
 
