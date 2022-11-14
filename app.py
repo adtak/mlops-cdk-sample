@@ -26,8 +26,9 @@ SampleSageMakerProcessingStack(
     app, "sample-sm-processing", preprocess_params=preprocess_params
 )
 training_params = {
-    "training_image_repo": ecr_stack.training_repository,
-    "training_output_bucket": s3_stack.training_output_bucket,
+    "image_repository": ecr_stack.training_repository,
+    "input_bucket": s3_stack.processing_input_bucket,
+    "output_bucket": s3_stack.training_output_bucket,
 }
 SampleSageMakerTrainingStack(app, "sample-sm-training", training_params=training_params)
 
