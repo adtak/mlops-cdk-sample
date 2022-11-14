@@ -25,7 +25,7 @@ class SampleSageMakerProcessingStack(Stack):
         definition = preprocess_step.next(success_step)
         sfn.StateMachine(
             self,
-            "SampleStateMachine",
+            "SampleProcessingStateMachine",
             definition=definition,
             timeout=Duration.minutes(5),
             role=get_role_statemachine(self),
@@ -80,7 +80,7 @@ def _create_processing_job_state(
 def get_role_statemachine(scope):
     return iam.Role(
         scope,
-        "SampleStateMachineRole",
+        "SampleProcessingStateMachineRole",
         assumed_by=iam.ServicePrincipal("states.ap-northeast-1.amazonaws.com"),
         inline_policies={
             "CreateSageMakerProcessingJobPolicy": iam.PolicyDocument(
