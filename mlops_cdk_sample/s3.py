@@ -8,15 +8,20 @@ from constructs import Construct
 class SampleS3Stack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
-        self.input_bucket = s3.Bucket(
+        self.processing_input_bucket = s3.Bucket(
             self,
-            "SampleInputBucket",
+            "SampleProcessingInputBucket",
             **_create_bucket_params("sample-sm-processing-input")
         )
-        self.output_bucket = s3.Bucket(
+        self.processing_output_bucket = s3.Bucket(
             self,
-            "SampleOutputBucket",
+            "SampleProcessingOutputBucket",
             **_create_bucket_params("sample-sm-processing-output")
+        )
+        self.training_output_bucket = s3.Bucket(
+            self,
+            "SampleTrainingOutputBucket",
+            **_create_bucket_params("sample-sm-training-output")
         )
 
 

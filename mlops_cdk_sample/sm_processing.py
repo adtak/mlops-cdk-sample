@@ -100,7 +100,7 @@ def get_role_sagemaker(scope):
     # https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html#sagemaker-roles-createprocessingjob-perms
     return iam.Role(
         scope,
-        "SampleSageMakerRole",
+        "SampleSageMakerProcessingJobRole",
         assumed_by=iam.ServicePrincipal("sagemaker.amazonaws.com"),
         inline_policies={
             "SageMakerProcessingPolicy": iam.PolicyDocument(

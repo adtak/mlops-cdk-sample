@@ -19,13 +19,16 @@ SamplePreprocessingImage(
 )
 preprocess_params = {
     "image_uri": ecr_stack.preprocessing_repository.repository_uri_for_tag("latest"),
-    "input_s3_uri": s3_stack.input_bucket.s3_url_for_object(),
-    "output_s3_uri": s3_stack.output_bucket.s3_url_for_object(),
+    "input_s3_uri": s3_stack.processing_input_bucket.s3_url_for_object(),
+    "output_s3_uri": s3_stack.processing_output_bucket.s3_url_for_object(),
 }
 SampleSageMakerProcessingStack(
     app, "sample-sm-processing", preprocess_params=preprocess_params
 )
-training_params = {"training_image_repo": ecr_stack.training_repository}
+training_params = {
+    "training_image_repo": ecr_stack.training_repository,
+    "training_output_bucket": s3_stack.training_output_bucket,
+}
 SampleSageMakerTrainingStack(app, "sample-sm-training", training_params=training_params)
 
 app.synth()
