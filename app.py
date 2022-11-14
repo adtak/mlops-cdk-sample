@@ -18,7 +18,7 @@ SamplePreprocessingImage(
     app, "sample-image", ecr_stack.preprocessing_repository.repository_uri
 )
 preprocess_params = {
-    "image_uri": ecr_stack.repository.repository_uri_for_tag("latest"),
+    "image_uri": ecr_stack.preprocessing_repository.repository_uri_for_tag("latest"),
     "input_s3_uri": s3_stack.input_bucket.s3_url_for_object(),
     "output_s3_uri": s3_stack.output_bucket.s3_url_for_object(),
 }
