@@ -1,26 +1,4 @@
-.PHONY: up-container build-container run-container rm-container format black isort test deploy destroy
-
-up-container: build-container run-container
-
-build-container:
-				docker build \
-				-f dev.Dockerfile \
-				-t mlops-cdk-sample \
-				--platform linux/x86_64 \
-				.
-
-run-container:
-				docker run \
-				--name mlops-cdk-sample \
-				--platform linux/x86_64 \
-				-itd \
-				-v $(PWD):/usr/src/app \
-				mlops-cdk-sample:latest
-
-rm-container:
-				docker rm \
-				-f \
-				mlops-cdk-sample
+.PHONY: format black isort test deploy destroy
 
 format: black isort
 
@@ -29,6 +7,9 @@ black:
 
 isort:
 				poetry run isort .
+
+mypy:
+				poetry run mypy .
 
 test:
 				poetry run pytest
