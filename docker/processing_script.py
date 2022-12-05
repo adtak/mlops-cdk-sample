@@ -1,7 +1,7 @@
 import csv
 
 
-def main():
+def main() -> None:
     print("Start processing.")
     with open("/opt/ml/processing/input/input.csv") as f:
         reader = csv.reader(f)

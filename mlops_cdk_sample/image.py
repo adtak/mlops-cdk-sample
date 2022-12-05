@@ -1,3 +1,5 @@
+from typing import Any
+
 import aws_cdk.aws_ecr_assets as ecr_assets
 import cdk_ecr_deployment as ecrdeploy
 from aws_cdk import Stack
@@ -6,7 +8,7 @@ from constructs import Construct
 
 class SamplePreprocessingImage(Stack):
     def __init__(
-        self, scope: Construct, construct_id: str, repository_uri, **kwargs
+        self, scope: Construct, construct_id: str, repository_uri: str, **kwargs: Any
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
         image = ecr_assets.DockerImageAsset(

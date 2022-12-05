@@ -6,7 +6,7 @@ from constructs import Construct
 
 
 class SampleS3Stack(Stack):
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
+    def __init__(self, scope: Construct, construct_id: str, **kwargs: Any) -> None:
         super().__init__(scope, construct_id, **kwargs)
         self.processing_input_bucket = s3.Bucket(
             self,
