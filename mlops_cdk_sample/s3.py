@@ -5,23 +5,23 @@ from aws_cdk import RemovalPolicy, Stack
 from constructs import Construct
 
 
-class SampleS3Stack(Stack):
+class S3Stack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs: Any) -> None:
         super().__init__(scope, construct_id, **kwargs)
         self.processing_input_bucket = s3.Bucket(
             self,
-            "SampleProcessingInputBucket",
-            **_create_bucket_params("sample-sm-processing-input")
+            "ProcessingInputBucket",
+            **_create_bucket_params("sm-processing-input")
         )
         self.processing_output_bucket = s3.Bucket(
             self,
             "SampleProcessingOutputBucket",
-            **_create_bucket_params("sample-sm-processing-output")
+            **_create_bucket_params("sm-processing-output")
         )
         self.training_output_bucket = s3.Bucket(
             self,
             "SampleTrainingOutputBucket",
-            **_create_bucket_params("sample-sm-training-output")
+            **_create_bucket_params("sm-training-output")
         )
 
 

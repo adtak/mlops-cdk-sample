@@ -5,18 +5,18 @@ from aws_cdk import RemovalPolicy, Stack
 from constructs import Construct
 
 
-class SampleECRStack(Stack):
+class ECRStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs: Any) -> None:
         super().__init__(scope, construct_id, **kwargs)
         self.preprocessing_repository = ecr.Repository(
             self,
-            "SamplePreProcessingRepo",
-            repository_name="sample-sm-processing",
+            "PreProcessingRepo",
+            repository_name="sm-processing",
             removal_policy=RemovalPolicy.DESTROY,
         )
         self.training_repository = ecr.Repository(
             self,
-            "SampleTrainingRepo",
-            repository_name="sample-sm-training",
+            "TrainingRepo",
+            repository_name="sm-training",
             removal_policy=RemovalPolicy.DESTROY,
         )

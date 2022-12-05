@@ -6,14 +6,14 @@ from aws_cdk import Stack
 from constructs import Construct
 
 
-class SamplePreprocessingImage(Stack):
+class PreprocessingImage(Stack):
     def __init__(
         self, scope: Construct, construct_id: str, repository_uri: str, **kwargs: Any
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
         image = ecr_assets.DockerImageAsset(
             self,
-            "SamplePreProcessingBuildImage",
+            "PreProcessingBuildImage",
             directory="./docker/",
             file="Dockerfile",
             build_args={"tag": "latest"},
@@ -21,7 +21,7 @@ class SamplePreprocessingImage(Stack):
         )
         ecrdeploy.ECRDeployment(
             self,
-            "SamplePreProcessingDeployImage",
+            "PreProcessingDeployImage",
             src=ecrdeploy.DockerImageName(image.image_uri),
             dest=ecrdeploy.DockerImageName(repository_uri),
         )
