@@ -18,20 +18,20 @@ ecr_stack = ECRStack(app, "sample-ecr")
 PreprocessingImage(
     app, "sample-image", ecr_stack.preprocessing_repository.repository_uri
 )
-preprocess_params: PreprocessingParams = {
+preprocessing_params: PreprocessingParams = {
     "image_repository": ecr_stack.preprocessing_repository,
     "input_s3_bucket": s3_stack.processing_input_bucket,
     "output_s3_bucket": s3_stack.processing_output_bucket,
 }
 training_params: TrainingParams = {
     "image_repository": ecr_stack.training_repository,
-    "input_s3_bucket": s3_stack.processing_input_bucket,
+    "input_s3_bucket": s3_stack.processing_output_bucket,
     "output_s3_bucket": s3_stack.training_output_bucket,
 }
 StepFunctionsStack(
     app,
     "sample-sfn",
-    preprocessing_params=preprocess_params,
+    preprocessing_params=preprocessing_params,
     training_params=training_params,
 )
 

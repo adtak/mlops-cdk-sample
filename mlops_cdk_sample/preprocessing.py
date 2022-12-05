@@ -13,17 +13,17 @@ class PreprocessingParams(TypedDict):
     image_repository: ecr.IRepository
 
 
-class PreProcessingJob:
+class PreprocessingJob:
     def __init__(
-        self, scope: Construct, preprocess_params: PreprocessingParams
+        self, scope: Construct, preprocessing_params: PreprocessingParams
     ) -> None:
         self.scope = scope
-        self.preprocessing_params = preprocess_params
+        self.preprocessing_params = preprocessing_params
 
     def create_task(self) -> sfn.CustomState:
         return sfn.CustomState(
             self.scope,
-            "SamplePreProcessingTask",
+            "PreprocessingTask",
             state_json=self._create_processing_job_state(),
         )
 
@@ -37,7 +37,7 @@ class PreProcessingJob:
                         "image_repository"
                     ].repository_uri_for_tag("latest")
                 },
-                "ProcessingJobName.$": "States.Format('PreProcessingJob-{}', $$.Execution.Name)",  # noqa: E501
+                "ProcessingJobName.$": "States.Format('PreprocessingJob-{}', $$.Execution.Name)",  # noqa: E501
                 "ProcessingResources": {
                     "ClusterConfig": {
                         "InstanceCount": 1,
@@ -47,7 +47,7 @@ class PreProcessingJob:
                 },
                 "ProcessingInputs": [
                     {
-                        "InputName": "PreProcessingJobInput",
+                        "InputName": "PreprocessingJobInput",
                         "S3Input": {
                             "LocalPath": "/opt/ml/processing/input",
                             "S3CompressionType": "None",
@@ -62,7 +62,7 @@ class PreProcessingJob:
                 "ProcessingOutputConfig": {
                     "Outputs": [
                         {
-                            "OutputName": "SamplePreProcessingJobOutput",
+                            "OutputName": "PreprocessingJobOutput",
                             "S3Output": {
                                 "LocalPath": "/opt/ml/processing/output",
                                 "S3UploadMode": "EndOfJob",

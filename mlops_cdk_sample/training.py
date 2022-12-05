@@ -61,10 +61,10 @@ class TrainingJob:
                 volume_size=Size.gibibytes(1),
             ),
             integration_pattern=sfn.IntegrationPattern.RUN_JOB,
-            role=self.get_role_sagemaker(),
+            role=self._get_sagemaker_training_job_role(),
         )
 
-    def get_role_sagemaker(self) -> iam.Role:
+    def _get_sagemaker_training_job_role(self) -> iam.Role:
         # https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html#sagemaker-roles-createtrainingjob-perms
         return iam.Role(
             self.scope,
