@@ -4,6 +4,7 @@ import aws_cdk.aws_ecr as ecr
 import aws_cdk.aws_iam as iam
 import aws_cdk.aws_s3 as s3
 import aws_cdk.aws_stepfunctions as sfn
+from constructs import Construct
 
 
 class PreprocessingParams(TypedDict):
@@ -13,11 +14,13 @@ class PreprocessingParams(TypedDict):
 
 
 class PreProcessingJob:
-    def __init__(self, scope, preprocess_params: PreprocessingParams) -> None:
+    def __init__(
+        self, scope: Construct, preprocess_params: PreprocessingParams
+    ) -> None:
         self.scope = scope
         self.preprocessing_params = preprocess_params
 
-    def create_task(self):
+    def create_task(self) -> sfn.CustomState:
         return sfn.CustomState(
             self.scope,
             "SamplePreProcessingTask",
@@ -74,7 +77,7 @@ class PreProcessingJob:
             },
         }
 
-    def _get_sagemaker_processing_job_role(self):
+    def _get_sagemaker_processing_job_role(self) -> iam.Role:
         # https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html#sagemaker-roles-createprocessingjob-perms
         return iam.Role(
             self.scope,

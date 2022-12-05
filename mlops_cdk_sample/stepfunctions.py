@@ -1,3 +1,5 @@
+from typing import Any
+
 import aws_cdk.aws_iam as iam
 import aws_cdk.aws_stepfunctions as sfn
 from aws_cdk import Duration, Stack
@@ -8,18 +10,18 @@ from mlops_cdk_sample.preprocessing import (PreProcessingJob,
 from mlops_cdk_sample.training import TrainingJob, TrainingParams
 
 
-class StapFunctionsStack(Stack):
+class StepFunctionsStack(Stack):
     def __init__(
         self,
         scope: Construct,
         construct_id: str,
         preprocessing_params: PreprocessingParams,
         training_params: TrainingParams,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
-        preprocess_step = PreProcessingJob(preprocessing_params).create_task()
-        training_step = TrainingJob(training_params).create_task()
+        preprocess_step = PreProcessingJob(self, preprocessing_params).create_task()
+        training_step = TrainingJob(self, training_params).create_task()
         success_step = sfn.Succeed(self, "Succeded")
         definition = preprocess_step.next(training_step).next(success_step)
         sfn.StateMachine(
@@ -30,7 +32,7 @@ class StapFunctionsStack(Stack):
             role=self.get_statemachine_role(),
         )
 
-    def get_statemachine_role(self):
+    def get_statemachine_role(self) -> iam.Role:
         return iam.Role(
             self,
             "MlopsStateMachineRole",

@@ -7,6 +7,7 @@ import aws_cdk.aws_s3 as s3
 import aws_cdk.aws_stepfunctions as sfn
 import aws_cdk.aws_stepfunctions_tasks as tasks
 from aws_cdk import Size
+from constructs import Construct
 
 
 class TrainingParams(TypedDict):
@@ -16,11 +17,11 @@ class TrainingParams(TypedDict):
 
 
 class TrainingJob:
-    def __init__(self, scope, training_params) -> None:
+    def __init__(self, scope: Construct, training_params: TrainingParams) -> None:
         self.scope = scope
         self.training_params = training_params
 
-    def create_task(self):
+    def create_task(self) -> tasks.SageMakerCreateTrainingJob:
         return tasks.SageMakerCreateTrainingJob(
             self.scope,
             "TrainingTask",
@@ -38,7 +39,7 @@ class TrainingJob:
                         s3_data_source=tasks.S3DataSource(
                             s3_data_type=tasks.S3DataType.S3_PREFIX,
                             s3_location=tasks.S3Location.from_bucket(
-                                self.training_params["input_bucket"], "input"
+                                self.training_params["input_s3_bucket"], "input"
                             ),
                         )
                     ),
@@ -48,7 +49,7 @@ class TrainingJob:
             ],
             output_data_config=tasks.OutputDataConfig(
                 s3_output_location=tasks.S3Location.from_bucket(
-                    self.training_params["output_bucket"], "output"
+                    self.training_params["output_s3_bucket"], "output"
                 ),
             ),
             enable_network_isolation=True,
@@ -63,7 +64,7 @@ class TrainingJob:
             role=self.get_role_sagemaker(),
         )
 
-    def get_role_sagemaker(self):
+    def get_role_sagemaker(self) -> iam.Role:
         # https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html#sagemaker-roles-createtrainingjob-perms
         return iam.Role(
             self.scope,
