@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 from mlops_cdk_sample.ecr import SampleECRStack
 from mlops_cdk_sample.image import SamplePreprocessingImage
 from mlops_cdk_sample.s3 import SampleS3Stack
-from mlops_cdk_sample.sm_processing import SampleSageMakerProcessingStack
-from mlops_cdk_sample.sm_training import SampleSageMakerTrainingStack
+from mlops_cdk_sample.preprocessing import SampleSageMakerProcessingStack
+from mlops_cdk_sample.training import SampleSageMakerTrainingStack
 
 load_dotenv(".env")
 
