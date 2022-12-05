@@ -73,7 +73,7 @@ class PreProcessingJob:
                         }
                     ],
                 },
-                "RoleArn": self._get_sagemaker_processing_job_role(),
+                "RoleArn": self._get_sagemaker_processing_job_role().role_arn,
             },
         }
 
