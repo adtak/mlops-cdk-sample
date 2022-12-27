@@ -25,3 +25,24 @@ class PreprocessingImage(Stack):
             src=ecrdeploy.DockerImageName(image.image_uri),
             dest=ecrdeploy.DockerImageName(repository_uri),
         )
+
+
+class TrainingImage(Stack):
+    def __init__(
+        self, scope: Construct, construct_id: str, repository_uri: str, **kwargs: Any
+    ) -> None:
+        super().__init__(scope, construct_id, **kwargs)
+        image = ecr_assets.DockerImageAsset(
+            self,
+            "TrainingBuildImage",
+            directory="./docker/",
+            file="train.Dockerfile",
+            build_args={"tag": "latest"},
+            platform=ecr_assets.Platform.LINUX_AMD64,
+        )
+        ecrdeploy.ECRDeployment(
+            self,
+            "TrainingDeployImage",
+            src=ecrdeploy.DockerImageName(image.image_uri),
+            dest=ecrdeploy.DockerImageName(repository_uri),
+        )

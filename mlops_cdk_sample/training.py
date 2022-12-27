@@ -6,7 +6,7 @@ import aws_cdk.aws_iam as iam
 import aws_cdk.aws_s3 as s3
 import aws_cdk.aws_stepfunctions as sfn
 import aws_cdk.aws_stepfunctions_tasks as tasks
-from aws_cdk import Size
+import aws_cdk as cdk
 from constructs import Construct
 
 
@@ -58,10 +58,11 @@ class TrainingJob:
                 instance_type=ec2.InstanceType.of(
                     ec2.InstanceClass.T3, ec2.InstanceSize.MEDIUM
                 ),
-                volume_size=Size.gibibytes(1),
+                volume_size=cdk.Size.gibibytes(1),
             ),
             integration_pattern=sfn.IntegrationPattern.RUN_JOB,
             role=self._get_sagemaker_training_job_role(),
+            timeout=cdk.Duration(10),
         )
 
     def _get_sagemaker_training_job_role(self) -> iam.Role:
