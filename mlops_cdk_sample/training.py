@@ -62,7 +62,7 @@ class TrainingJob:
             ),
             integration_pattern=sfn.IntegrationPattern.RUN_JOB,
             role=self._get_sagemaker_training_job_role(),
-            timeout=cdk.Duration(10),
+            timeout=cdk.Duration.minutes(5),
         )
 
     def _get_sagemaker_training_job_role(self) -> iam.Role:

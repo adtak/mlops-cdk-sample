@@ -10,18 +10,18 @@ class S3Stack(Stack):
         super().__init__(scope, construct_id, **kwargs)
         self.processing_input_bucket = s3.Bucket(
             self,
-            "ProcessingInputBucket",
-            **_create_bucket_params("sm-processing-input")
+            "PreProcessingInputBucket",
+            **_create_bucket_params("mlops-preprocessing-input")
         )
         self.processing_output_bucket = s3.Bucket(
             self,
-            "SampleProcessingOutputBucket",
-            **_create_bucket_params("sm-processing-output")
+            "PreProcessingOutputBucket",
+            **_create_bucket_params("mlops-preprocessing-output")
         )
         self.training_output_bucket = s3.Bucket(
             self,
-            "SampleTrainingOutputBucket",
-            **_create_bucket_params("sm-training-output")
+            "TrainingOutputBucket",
+            **_create_bucket_params("mlops-training-output")
         )
 
 
