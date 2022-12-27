@@ -15,7 +15,7 @@ test:
 				poetry run pytest
 
 deploy:
-				poetry run cdk deploy
+				poetry run cdk deploy --all
 
 destroy:
-				poetry run cdk destroy
+				poetry run cdk destroy --all
