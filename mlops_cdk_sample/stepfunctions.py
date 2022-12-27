@@ -29,7 +29,7 @@ class StepFunctionsStack(Stack):
             "MlopsStateMachine",
             state_machine_name="mlops-statemachine",
             definition=definition,
-            timeout=Duration.minutes(5),
+            timeout=Duration.minutes(30),
             role=self._get_statemachine_role(),
         )
 

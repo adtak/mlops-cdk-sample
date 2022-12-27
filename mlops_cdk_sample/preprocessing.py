@@ -74,6 +74,7 @@ class PreprocessingJob:
                     ],
                 },
                 "RoleArn": self._get_sagemaker_processing_job_role().role_arn,
+                "StoppingCondition": {"MaxRuntimeInSeconds": 600}
             },
         }
 
