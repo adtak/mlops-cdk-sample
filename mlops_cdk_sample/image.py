@@ -15,7 +15,7 @@ class PreprocessingImage(Stack):
             self,
             "PreProcessingBuildImage",
             directory="./docker/",
-            file="Dockerfile",
+            file="preprocess.Dockerfile",
             build_args={"tag": "latest"},
             platform=ecr_assets.Platform.LINUX_AMD64,
         )
