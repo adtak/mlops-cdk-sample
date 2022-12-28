@@ -3,12 +3,14 @@ from typing import TypedDict
 import aws_cdk as cdk
 import aws_cdk.aws_ec2 as ec2
 import aws_cdk.aws_ecr as ecr
+import aws_cdk.aws_s3 as s3
 import aws_cdk.aws_stepfunctions as sfn
 import aws_cdk.aws_stepfunctions_tasks as tasks
 from constructs import Construct
 
 
 class ModelParams(TypedDict):
+    input_s3_bucket_url: s3.IBucket
     image_repository: ecr.IRepository
 
 

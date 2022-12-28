@@ -4,6 +4,7 @@ import aws_cdk as cdk
 from dotenv import load_dotenv
 
 from mlops_cdk_sample.ecr import ECRStack
+from mlops_cdk_sample.endpoint import ModelParams
 from mlops_cdk_sample.image import PreprocessingImage, TrainingImage
 from mlops_cdk_sample.preprocessing import PreprocessingParams
 from mlops_cdk_sample.s3 import S3Stack
@@ -29,11 +30,16 @@ training_params: TrainingParams = {
     "input_s3_bucket": s3_stack.processing_output_bucket,
     "output_s3_bucket": s3_stack.training_output_bucket,
 }
+model_params: ModelParams = {
+    "input_s3_bucket_url": s3_stack.training_output_bucket,
+    "image_repository": ecr_stack.predict_repository,
+}
 StepFunctionsStack(
     app,
     "mlops-sfn",
     preprocessing_params=preprocessing_params,
     training_params=training_params,
+    model_params=model_params,
 )
 
 app.synth()
