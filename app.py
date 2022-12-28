@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 
 from mlops_cdk_sample.ecr import ECRStack
 from mlops_cdk_sample.endpoint import ModelParams
-from mlops_cdk_sample.image import PreprocessingImage, TrainingImage
+from mlops_cdk_sample.image import (PredictImage, PreprocessingImage,
+                                    TrainingImage)
 from mlops_cdk_sample.preprocessing import PreprocessingParams
 from mlops_cdk_sample.s3 import S3Stack
 from mlops_cdk_sample.stepfunctions import StepFunctionsStack
@@ -20,6 +21,7 @@ PreprocessingImage(
     app, "preprocessing-image", ecr_stack.preprocessing_repository.repository_uri
 )
 TrainingImage(app, "training-image", ecr_stack.training_repository.repository_uri)
+PredictImage(app, "predict-image", ecr_stack.predict_repository.repository_uri)
 preprocessing_params: PreprocessingParams = {
     "image_repository": ecr_stack.preprocessing_repository,
     "input_s3_bucket": s3_stack.processing_input_bucket,
