@@ -28,6 +28,9 @@ class PreprocessingJob:
         )
 
     def _create_processing_job_state(self) -> Dict[str, Any]:
+        output_s3_bucket_url = self.preprocessing_params[
+            "output_s3_bucket"
+        ].s3_url_for_object()
         return {
             "Type": "Task",
             "Resource": "arn:aws:states:::sagemaker:createProcessingJob.sync",
@@ -37,7 +40,9 @@ class PreprocessingJob:
                         "image_repository"
                     ].repository_uri_for_tag("latest")
                 },
-                "ProcessingJobName.$": "States.Format('PreprocessingJob-{}', $$.Execution.Name)",  # noqa: E501
+                "ProcessingJobName.$": (
+                    "States.Format('PreprocessingJob-{}', $$.Execution.Name)"
+                ),
                 "ProcessingResources": {
                     "ClusterConfig": {
                         "InstanceCount": 1,
@@ -66,15 +71,16 @@ class PreprocessingJob:
                             "S3Output": {
                                 "LocalPath": "/opt/ml/processing/output",
                                 "S3UploadMode": "EndOfJob",
-                                "S3Uri": self.preprocessing_params[
-                                    "output_s3_bucket"
-                                ].url_for_object(),
+                                "S3Uri.$": (
+                                    f"States.Format('{output_s3_bucket_url}/{{}}',"
+                                    " $$.Execution.Name)"
+                                ),
                             },
                         }
                     ],
                 },
                 "RoleArn": self._get_sagemaker_processing_job_role().role_arn,
-                "StoppingCondition": {"MaxRuntimeInSeconds": 600}
+                "StoppingCondition": {"MaxRuntimeInSeconds": 600},
             },
         }
 

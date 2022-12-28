@@ -1,12 +1,12 @@
 from typing import TypedDict
 
+import aws_cdk as cdk
 import aws_cdk.aws_ec2 as ec2
 import aws_cdk.aws_ecr as ecr
 import aws_cdk.aws_iam as iam
 import aws_cdk.aws_s3 as s3
 import aws_cdk.aws_stepfunctions as sfn
 import aws_cdk.aws_stepfunctions_tasks as tasks
-import aws_cdk as cdk
 from constructs import Construct
 
 
@@ -22,6 +22,9 @@ class TrainingJob:
         self.training_params = training_params
 
     def create_task(self) -> tasks.SageMakerCreateTrainingJob:
+        input_s3_bucket_url = self.training_params[
+            "input_s3_bucket"
+        ].s3_url_for_object()
         return tasks.SageMakerCreateTrainingJob(
             self.scope,
             "TrainingTask",
@@ -38,8 +41,9 @@ class TrainingJob:
                     data_source=tasks.DataSource(
                         s3_data_source=tasks.S3DataSource(
                             s3_data_type=tasks.S3DataType.S3_PREFIX,
-                            s3_location=tasks.S3Location.from_bucket(
-                                self.training_params["input_s3_bucket"], "input"
+                            s3_location=tasks.S3Location.from_json_expression(
+                                f"States.Format('{input_s3_bucket_url}/{{}}',"
+                                " $$.Execution.Name)"
                             ),
                         )
                     ),
@@ -56,7 +60,7 @@ class TrainingJob:
             resource_config=tasks.ResourceConfig(
                 instance_count=1,
                 instance_type=ec2.InstanceType.of(
-                    ec2.InstanceClass.T3, ec2.InstanceSize.MEDIUM
+                    ec2.InstanceClass.M5, ec2.InstanceSize.LARGE
                 ),
                 volume_size=cdk.Size.gibibytes(1),
             ),
