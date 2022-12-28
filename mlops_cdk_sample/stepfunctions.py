@@ -24,7 +24,7 @@ class StepFunctionsStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
         preprocess_step = PreprocessingJob(self, preprocessing_params).create_task()
         training_step = TrainingJob(self, training_params).create_task()
-        model_step = SagemakerModel(self, model_params)
+        model_step = SagemakerModel(self, model_params).create_task()
         success_step = sfn.Succeed(self, "Succeded")
         definition = (
             preprocess_step.next(training_step).next(model_step).next(success_step)
