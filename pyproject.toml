@@ -45,3 +45,5 @@ warn_return_any = true
 warn_unused_ignores = true
 # 冗長なキャストに警告
 warn_redundant_casts = true
+# チェック対象外ディレクトリ
+exclude = ["^cdk.out/$", "^docker/"]

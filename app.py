@@ -33,7 +33,7 @@ training_params: TrainingParams = {
     "output_s3_bucket": s3_stack.training_output_bucket,
 }
 model_params: ModelParams = {
-    "input_s3_bucket_url": s3_stack.training_output_bucket,
+    "input_s3_bucket": s3_stack.training_output_bucket,
     "image_repository": ecr_stack.predict_repository,
 }
 StepFunctionsStack(

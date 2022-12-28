@@ -10,7 +10,7 @@ from constructs import Construct
 
 
 class ModelParams(TypedDict):
-    input_s3_bucket_url: s3.IBucket
+    input_s3_bucket: s3.IBucket
     image_repository: ecr.IRepository
 
 
@@ -37,7 +37,7 @@ class SagemakerModel:
                     " $$.Execution.Name)"
                 ),
             ),
-            integration_pattern=sfn.IntegrationPattern.RUN_JOB,
+            integration_pattern=sfn.IntegrationPattern.REQUEST_RESPONSE,
             timeout=cdk.Duration.minutes(10),
         )
 
@@ -47,7 +47,7 @@ class SagemakerEndpointConfig:
         self.scope = scope
 
     def create_task(self) -> tasks.SageMakerCreateEndpointConfig:
-        tasks.SageMakerCreateEndpointConfig(
+        return tasks.SageMakerCreateEndpointConfig(
             self.scope,
             "SagemakerEndpointConfig",
             endpoint_config_name="MlopsEndpointConfig",
@@ -72,7 +72,7 @@ class SagemakerEndpoint:
         self.scope = scope
 
     def create_task(self) -> tasks.SageMakerCreateEndpoint:
-        tasks.SageMakerCreateEndpoint(
+        return tasks.SageMakerCreateEndpoint(
             self.scope,
             "SagemakerEndpoint",
             endpoint_name="mlops-endpoint",
