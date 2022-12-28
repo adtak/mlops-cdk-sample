@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 
 def main() -> None:
     print("Start training.")
-    df = pd.read_csv("/opt/ml/input/data/data.csv")
+    df = pd.read_csv("/opt/ml/input/data/training/data.csv")
     X = df.values[:, :-1]
     y = df.values[:, -1]
     X_train, _, y_train, _ = train_test_split(X, y, test_size=0.2)

@@ -7,7 +7,7 @@ def main() -> None:
         reader = csv.reader(f)
         input = [i for i in reader]
     print(f"Input: {input}")
-    with open("/opt/ml/processing/output/output.csv", "w") as f:
+    with open("/opt/ml/processing/output/data.csv", "w") as f:
         writer = csv.writer(f)
         writer.writerows(input)
     print("Finish processing.")
