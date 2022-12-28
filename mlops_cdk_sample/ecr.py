@@ -20,3 +20,9 @@ class ECRStack(Stack):
             repository_name="sm-training",
             removal_policy=RemovalPolicy.DESTROY,
         )
+        self.predict_repository = ecr.Repository(
+            self,
+            "PredictRepo",
+            repository_name="sm-predict",
+            removal_policy=RemovalPolicy.DESTROY,
+        )
