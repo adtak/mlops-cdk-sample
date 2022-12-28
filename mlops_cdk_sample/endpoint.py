@@ -33,7 +33,7 @@ class SagemakerModel:
                 mode=tasks.Mode.SINGLE_MODEL,
                 # https://docs.aws.amazon.com/sagemaker/latest/dg/your-algorithms-inference-code.html#your-algorithms-inference-code-load-artifacts
                 model_s3_location=tasks.S3Location.from_json_expression(
-                    f"States.Format('{input_s3_bucket_url}/{{}}/output/model.tar.gz',"
+                    f"States.Format('{input_s3_bucket_url}/output/{{}}/output/model.tar.gz',"  # noqa: E501
                     " $$.Execution.Name)"
                 ),
             ),
