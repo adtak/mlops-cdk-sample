@@ -75,9 +75,11 @@ class SagemakerEndpoint:
     def create_task(self) -> tasks.SageMakerCreateEndpoint:
         return tasks.SageMakerCreateEndpoint(
             self.scope,
-            "SagemakerEndpoint",
+            "CreateEndpointTask",
             endpoint_name="mlops-endpoint",
-            endpoint_config_name=sfn.JsonPath.string_at("$.EndpointConfigName"),
+            endpoint_config_name=sfn.JsonPath.string_at(
+                "States.Format('LinearRegr-EndpointConfig-{}', $$.Execution.Name)"
+            ),
             integration_pattern=sfn.IntegrationPattern.REQUEST_RESPONSE,
-            timeout=cdk.Duration.minutes(5),
+            timeout=cdk.Duration.minutes(10),
         )
