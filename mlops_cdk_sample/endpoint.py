@@ -3,14 +3,12 @@ from typing import TypedDict
 import aws_cdk as cdk
 import aws_cdk.aws_ec2 as ec2
 import aws_cdk.aws_ecr as ecr
-import aws_cdk.aws_s3 as s3
 import aws_cdk.aws_stepfunctions as sfn
 import aws_cdk.aws_stepfunctions_tasks as tasks
 from constructs import Construct
 
 
 class ModelParams(TypedDict):
-    input_s3_bucket: s3.IBucket
     image_repository: ecr.IRepository
 
 
@@ -20,11 +18,12 @@ class SagemakerModel:
         self.model_params = model_params
 
     def create_task(self) -> tasks.SageMakerCreateModel:
-        input_s3_bucket_url = self.model_params["input_s3_bucket"].s3_url_for_object()
         return tasks.SageMakerCreateModel(
             self.scope,
             "CreateModelTask",
-            model_name="LinearRegr",
+            model_name=sfn.JsonPath.string_at(
+                "States.Format('LinearRegr-{}', $$.Execution.Name)"
+            ),
             primary_container=tasks.ContainerDefinition(
                 image=tasks.DockerImage.from_ecr_repository(
                     repository=self.model_params["image_repository"],
@@ -33,8 +32,7 @@ class SagemakerModel:
                 mode=tasks.Mode.SINGLE_MODEL,
                 # https://docs.aws.amazon.com/sagemaker/latest/dg/your-algorithms-inference-code.html#your-algorithms-inference-code-load-artifacts
                 model_s3_location=tasks.S3Location.from_json_expression(
-                    f"States.Format('{input_s3_bucket_url}/output/{{}}/output/model.tar.gz',"  # noqa: E501
-                    " $$.Execution.Name)"
+                    "$.ModelArtifacts.S3ModelArtifacts"
                 ),
             ),
             integration_pattern=sfn.IntegrationPattern.REQUEST_RESPONSE,
