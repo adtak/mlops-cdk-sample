@@ -1,7 +1,15 @@
+import pickle
+
 import uvicorn
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 app = FastAPI()
+
+
+class InvocationsRequest(BaseModel):
+    x1: int
+    x2: int
 
 
 @app.get("/ping")
@@ -10,8 +18,11 @@ def ping():
 
 
 @app.post("/invocations")
-def transformation():
-    return {"invocated": True}
+def invocations(request: InvocationsRequest):
+    with open("/opt/ml/model/model.pickle", "rb") as f:
+        model = pickle.load(f)
+    result = model.predict([[request.x1, request.x2]])
+    return {"invocated": True, "result": result}
 
 
 if __name__ == "__main__":
