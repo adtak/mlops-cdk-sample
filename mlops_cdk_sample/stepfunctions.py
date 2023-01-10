@@ -5,7 +5,8 @@ import aws_cdk.aws_stepfunctions as sfn
 from aws_cdk import Duration, Stack
 from constructs import Construct
 
-from mlops_cdk_sample.endpoint import ModelParams, SagemakerModel
+from mlops_cdk_sample.endpoint import (ModelParams, SagemakerEndpointConfig,
+                                       SagemakerModel)
 from mlops_cdk_sample.preprocessing import (PreprocessingJob,
                                             PreprocessingParams)
 from mlops_cdk_sample.training import TrainingJob, TrainingParams
@@ -25,9 +26,13 @@ class StepFunctionsStack(Stack):
         preprocess_step = PreprocessingJob(self, preprocessing_params).create_task()
         training_step = TrainingJob(self, training_params).create_task()
         model_step = SagemakerModel(self, model_params).create_task()
+        endpoint_config_step = SagemakerEndpointConfig(self).create_task()
         success_step = sfn.Succeed(self, "Succeded")
         definition = (
-            preprocess_step.next(training_step).next(model_step).next(success_step)
+            preprocess_step.next(training_step)
+            .next(model_step)
+            .next(endpoint_config_step)
+            .next(success_step)
         )
         sfn.StateMachine(
             self,

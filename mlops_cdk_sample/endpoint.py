@@ -47,20 +47,23 @@ class SagemakerEndpointConfig:
     def create_task(self) -> tasks.SageMakerCreateEndpointConfig:
         return tasks.SageMakerCreateEndpointConfig(
             self.scope,
-            "SagemakerEndpointConfig",
-            endpoint_config_name="MlopsEndpointConfig",
+            "CreateEndpointConfigTask",
+            endpoint_config_name=sfn.JsonPath.string_at(
+                "States.Format('LinearRegr-EndpointConfig-{}', $$.Execution.Name)"
+            ),
             production_variants=[
                 tasks.ProductionVariant(
-                    initial_instance_count=1,
                     instance_type=ec2.InstanceType.of(
                         ec2.InstanceClass.M5,
                         ec2.InstanceSize.LARGE,
                     ),
-                    model_name="MyModel",
-                    variant_name="",
+                    model_name=sfn.JsonPath.string_at(
+                        "States.Format('LinearRegr-{}', $$.Execution.Name)"
+                    ),
+                    variant_name="variant-name-1",
                 )
             ],
-            integration_pattern=sfn.IntegrationPattern.RUN_JOB,
+            integration_pattern=sfn.IntegrationPattern.REQUEST_RESPONSE,
             timeout=cdk.Duration.minutes(10),
         )
 
