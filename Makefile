@@ -1,4 +1,4 @@
-.PHONY: format black isort test deploy destroy
+.PHONY: format black isort test deploy destroy invoke
 
 format: black isort
 
@@ -19,3 +19,6 @@ deploy:
 
 destroy:
 				poetry run cdk destroy --all
+
+invoke:
+				aws sagemaker-runtime invoke-endpoint --endpoint-name mlops-endpoint --body `echo '{"x1":1, "x2":2}' | base64` output.json

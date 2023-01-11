@@ -22,7 +22,7 @@ def invocations(request: InvocationsRequest):
     with open("/opt/ml/model/model.pickle", "rb") as f:
         model = pickle.load(f)
     result = model.predict([[request.x1, request.x2]])
-    return {"invocated": True, "result": result}
+    return {"result": result.tolist()}
 
 
 if __name__ == "__main__":
