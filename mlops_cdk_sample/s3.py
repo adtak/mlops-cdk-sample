@@ -23,6 +23,9 @@ class S3Stack(Stack):
             "TrainingOutputBucket",
             **_create_bucket_params("mlops-training-output")
         )
+        self.capture_data_bucket = s3.Bucket(
+            self, "CaptureDataBucket", **_create_bucket_params("mlops-capture-data")
+        )
 
 
 def _create_bucket_params(bucket_name: str) -> Dict[str, Any]:

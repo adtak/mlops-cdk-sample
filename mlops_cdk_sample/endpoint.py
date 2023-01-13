@@ -1,8 +1,8 @@
-from typing import TypedDict
+from typing import Any, Dict, TypedDict
 
 import aws_cdk as cdk
-import aws_cdk.aws_ec2 as ec2
 import aws_cdk.aws_ecr as ecr
+import aws_cdk.aws_s3 as s3
 import aws_cdk.aws_stepfunctions as sfn
 import aws_cdk.aws_stepfunctions_tasks as tasks
 from constructs import Construct
@@ -10,6 +10,10 @@ from constructs import Construct
 
 class ModelParams(TypedDict):
     image_repository: ecr.IRepository
+
+
+class EndpointConfigParams(TypedDict):
+    capture_data_s3_bucket: s3.IBucket
 
 
 class SagemakerModel:
@@ -41,31 +45,50 @@ class SagemakerModel:
 
 
 class SagemakerEndpointConfig:
-    def __init__(self, scope: Construct) -> None:
+    def __init__(
+        self, scope: Construct, endpoint_config_params: EndpointConfigParams
+    ) -> None:
         self.scope = scope
+        self.endpoint_config_params = endpoint_config_params
 
-    def create_task(self) -> tasks.SageMakerCreateEndpointConfig:
-        return tasks.SageMakerCreateEndpointConfig(
+    def create_task(self) -> sfn.CustomState:
+        return sfn.CustomState(
             self.scope,
             "CreateEndpointConfigTask",
-            endpoint_config_name=sfn.JsonPath.string_at(
-                "States.Format('LinearRegr-EndpointConfig-{}', $$.Execution.Name)"
-            ),
-            production_variants=[
-                tasks.ProductionVariant(
-                    instance_type=ec2.InstanceType.of(
-                        ec2.InstanceClass.M5,
-                        ec2.InstanceSize.LARGE,
-                    ),
-                    model_name=sfn.JsonPath.string_at(
-                        "States.Format('LinearRegr-{}', $$.Execution.Name)"
-                    ),
-                    variant_name="variant-name-1",
-                )
-            ],
-            integration_pattern=sfn.IntegrationPattern.REQUEST_RESPONSE,
-            timeout=cdk.Duration.minutes(10),
+            state_json=self._create_state_json(),
         )
+
+    def _create_state_json(self) -> Dict[str, Any]:
+        return {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::sagemaker:createEndpointConfig",
+            "Parameters": {
+                "EndpointConfigName.$": (
+                    "States.Format('LinearRegr-EndpointConfig-{}', $$.Execution.Name)"
+                ),
+                "ProductionVariants": [
+                    {
+                        "InitialInstanceCount": 1,
+                        "InstanceType": "ml.t2.medium",
+                        "ModelName.$": (
+                            "States.Format('LinearRegr-{}', $$.Execution.Name)"
+                        ),
+                        "VariantName": "variant-name-1",
+                    }
+                ],
+                "DataCaptureConfig": {
+                    "EnableCapture": True,
+                    "CaptureOptions": [
+                        {"CaptureMode": "Input"},
+                        {"CaptureMode": "Output"},
+                    ],
+                    "DestinationS3Uri": self.endpoint_config_params[
+                        "capture_data_s3_bucket"
+                    ].url_for_object(),
+                    "InitialSamplingPercentage": 100,
+                },
+            },
+        }
 
 
 class SagemakerEndpoint:

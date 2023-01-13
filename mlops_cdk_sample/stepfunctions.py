@@ -5,7 +5,8 @@ import aws_cdk.aws_stepfunctions as sfn
 from aws_cdk import Duration, Stack
 from constructs import Construct
 
-from mlops_cdk_sample.endpoint import (ModelParams, SagemakerEndpoint,
+from mlops_cdk_sample.endpoint import (EndpointConfigParams, ModelParams,
+                                       SagemakerEndpoint,
                                        SagemakerEndpointConfig, SagemakerModel)
 from mlops_cdk_sample.preprocessing import (PreprocessingJob,
                                             PreprocessingParams)
@@ -20,13 +21,16 @@ class StepFunctionsStack(Stack):
         preprocessing_params: PreprocessingParams,
         training_params: TrainingParams,
         model_params: ModelParams,
+        endpoint_config_params: EndpointConfigParams,
         **kwargs: Any
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
         preprocess_step = PreprocessingJob(self, preprocessing_params).create_task()
         training_step = TrainingJob(self, training_params).create_task()
         model_step = SagemakerModel(self, model_params).create_task()
-        endpoint_config_step = SagemakerEndpointConfig(self).create_task()
+        endpoint_config_step = SagemakerEndpointConfig(
+            self, endpoint_config_params
+        ).create_task()
         endpoint_step = SagemakerEndpoint(self).create_task()
         success_step = sfn.Succeed(self, "Succeded")
         definition = (
@@ -98,6 +102,15 @@ class StepFunctionsStack(Stack):
                                 "events:PutRule",
                                 "events:DescribeRule",
                             ],
+                            effect=iam.Effect.ALLOW,
+                            resources=["*"],
+                        ),
+                    ]
+                ),
+                "CreateEndpointConfigPolicy": iam.PolicyDocument(
+                    statements=[
+                        iam.PolicyStatement(
+                            actions=["sagemaker:CreateEndpointConfig", "iam:PassRole"],
                             effect=iam.Effect.ALLOW,
                             resources=["*"],
                         ),
