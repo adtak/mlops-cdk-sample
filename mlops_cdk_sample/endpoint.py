@@ -2,6 +2,7 @@ from typing import Any, Dict, TypedDict
 
 import aws_cdk as cdk
 import aws_cdk.aws_ecr as ecr
+import aws_cdk.aws_iam as iam
 import aws_cdk.aws_s3 as s3
 import aws_cdk.aws_stepfunctions as sfn
 import aws_cdk.aws_stepfunctions_tasks as tasks
@@ -40,7 +41,54 @@ class SagemakerModel:
                 ),
             ),
             integration_pattern=sfn.IntegrationPattern.REQUEST_RESPONSE,
+            role=self._get_sagemaker_model_role(),
             timeout=cdk.Duration.minutes(10),
+        )
+
+    def _get_sagemaker_model_role(self) -> iam.Role:
+        return iam.Role(
+            self.scope,
+            "SageMakerModelRole",
+            assumed_by=iam.ServicePrincipal("sagemaker.amazonaws.com"),
+            inline_policies={
+                "SageMakerModelPolicy": iam.PolicyDocument(
+                    statements=[
+                        iam.PolicyStatement(
+                            actions=[
+                                "cloudwatch:PutMetricData",
+                                "ecr:GetAuthorizationToken",
+                                "logs:CreateLogGroup",
+                                "logs:CreateLogStream",
+                                "logs:DescribeLogStreams",
+                                "logs:PutLogEvents",
+                            ],
+                            effect=iam.Effect.ALLOW,
+                            resources=["*"],
+                        ),
+                        iam.PolicyStatement(
+                            actions=[
+                                "ecr:BatchCheckLayerAvailability",
+                                "ecr:BatchGetImage",
+                                "ecr:GetDownloadUrlForLayer",
+                            ],
+                            effect=iam.Effect.ALLOW,
+                            resources=[
+                                self.model_params["image_repository"].repository_arn
+                            ],
+                        ),
+                        iam.PolicyStatement(
+                            actions=[
+                                "ecr:GetAuthorizationToken",
+                                "s3:GetObject",
+                                "s3:PutObject",
+                                "s3:ListBucket",
+                            ],
+                            effect=iam.Effect.ALLOW,
+                            resources=["*"],
+                        ),
+                    ]
+                )
+            },
         )
 
 
@@ -84,7 +132,7 @@ class SagemakerEndpointConfig:
                     ],
                     "DestinationS3Uri": self.endpoint_config_params[
                         "capture_data_s3_bucket"
-                    ].url_for_object(),
+                    ].s3_url_for_object(),
                     "InitialSamplingPercentage": 100,
                 },
             },
