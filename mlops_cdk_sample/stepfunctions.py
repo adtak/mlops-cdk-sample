@@ -2,6 +2,7 @@ from typing import Any
 
 import aws_cdk.aws_iam as iam
 import aws_cdk.aws_stepfunctions as sfn
+import aws_cdk.aws_stepfunctions_tasks as tasks
 from aws_cdk import Duration, Stack
 from constructs import Construct
 
@@ -31,13 +32,18 @@ class StepFunctionsStack(Stack):
         endpoint_config_step = SagemakerEndpointConfig(
             self, endpoint_config_params
         ).create_task()
-        endpoint_step = SagemakerEndpoint(self).create_task()
         success_step = sfn.Succeed(self, "Succeded")
+        create_endpoint_step = self._create_describe_endpoint().add_catch(
+            SagemakerEndpoint(self).create_create_task().next(success_step),
+            errors=["SageMaker.SageMakerException"],
+        )
+        update_endpoint_step = SagemakerEndpoint(self).create_update_task()
         definition = (
             preprocess_step.next(training_step)
             .next(model_step)
             .next(endpoint_config_step)
-            .next(endpoint_step)
+            .next(create_endpoint_step)
+            .next(update_endpoint_step)
             .next(success_step)
         )
         sfn.StateMachine(
@@ -117,4 +123,14 @@ class StepFunctionsStack(Stack):
                     ]
                 ),
             },
+        )
+
+    def _create_describe_endpoint(self) -> tasks.CallAwsService:
+        return tasks.CallAwsService(
+            self,
+            "DescribeEndpointTask",
+            service="sagemaker",
+            action="describeEndpoint",
+            iam_resources=["*"],
+            parameters={"EndpointName": "mlops-endpoint"},
         )
